@@ -1,0 +1,6 @@
+Revision history for Mojolicious-Plugin-Bootstrap
+
+3.1001
+       * Started project
+       * Bundled Bootstrap 3.1.1 as packed and unpacked
+       * Bundled http://code.jquery.com/jquery-1.11.0.min.js
