@@ -104,11 +104,34 @@ bootstrap file smaller and more personal.
 =cut
 
 use Mojo::Base 'Mojolicious::Plugin';
+use File::Spec::Functions 'catdir';
 use Cwd ();
 
 our $VERSION = '3.1001';
 
 =head1 METHODS
+
+=head2 asset_path
+
+  $path = Mojolicious::Plugin::Bootstrap3->asset_path($type);
+  $path = $self->asset_path($type);
+
+Returns the base path to the assets bundled with this module.
+
+Set C<$type> to "sass" if you want a return value that is suitable for
+the C<SASS_PATH> environment variable.
+
+=cut
+
+sub asset_path {
+  my($class, $type) = @_;
+  my $path = Cwd::abs_path(__FILE__);
+
+  $path =~ s!\.pm$!!;
+
+  return join ':', grep { $_ } catdir($path, 'sass'), $ENV{SASS_PATH} if $type and $type eq 'sass';
+  return $path;
+}
 
 =head2 register
 
@@ -156,7 +179,6 @@ L<bootstrap.js> asset. Set this to 0 if you include your own jQuery.
 
 sub register {
   my($self, $app, $config) = @_;
-  my $static_path;
 
   $app->plugin('AssetPack') unless eval { $app->asset };
 
@@ -164,13 +186,11 @@ sub register {
   $config->{js} ||= [qw( affix.js alert.js button.js carousel.js collapse.js dropdown.js modal.js popover.js scrollspy.js tab.js tooltip.js transition.js )];
   $config->{jquery} //= 1;
 
-  $static_path = Cwd::abs_path(__FILE__);
-  $static_path =~ s!\.pm$!!;
-  push @{ $app->static->paths }, $static_path;
+  push @{ $app->static->paths }, $self->asset_path;
 
   # TODO: 'bootstrap_resources.scss'
   if(@{ $config->{css} }) {
-    local $ENV{SASS_PATH} = join ':', grep { $_ } $static_path, $ENV{SASS_PATH};
+    local $ENV{SASS_PATH} = $self->asset_path('sass');
     $app->asset('bootstrap.css' => map { "/sass/$_" } @{ $config->{css} });
   }
 
