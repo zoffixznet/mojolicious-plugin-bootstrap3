@@ -1,1 +1,1 @@
-lib/Mojolicious/Plugin/Bootstrap.pm
+lib/Mojolicious/Plugin/Bootstrap3.pm
