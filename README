@@ -1,11 +1,11 @@
 NAME
-    Mojolicious::Plugin::Bootstrap - Mojolicious + http://getbootstrap.com/
+    Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 VERSION
     3.1001, Bootstrap 3.1.1
 
 DESCRIPTION
-    Mojolicious::Plugin::Bootstrap is used to include
+    Mojolicious::Plugin::Bootstrap3 is used to include
     <http://getbootstrap.com/> CSS and JavaScript files into your project.
 
     This is done with the help of Mojolicious::Plugin::AssetPack and sass

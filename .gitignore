@@ -12,7 +12,8 @@ Makefile
 Makefile.old
 MANIFEST
 MANIFEST.bak
-Mojolicious-Plugin-Bootstrap-*
+Mojolicious-Plugin-Bootstrap3-*
+Changes.old
 MYMETA*
 .rbenv-version
 .rvmrc

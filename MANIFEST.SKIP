@@ -11,6 +11,12 @@ tasks/
 templates/
 test/
 vendor/
+Changes.old
+Makefile.old
+MANIFEST.*
+MYMETA.*
+README.pod
+Makefile$
 \.sass-cache
 \.git/
 \.swp

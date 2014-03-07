@@ -1,8 +1,8 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
-  NAME => 'Mojolicious::Plugin::Bootstrap',
-  ABSTRACT_FROM => 'lib/Mojolicious/Plugin/Bootstrap.pm',
-  VERSION_FROM => 'lib/Mojolicious/Plugin/Bootstrap.pm',
+  NAME => 'Mojolicious::Plugin::Bootstrap3',
+  ABSTRACT_FROM => 'lib/Mojolicious/Plugin/Bootstrap3.pm',
+  VERSION_FROM => 'lib/Mojolicious/Plugin/Bootstrap3.pm',
   AUTHOR => 'Jan Henning Thorsen <jhthorsen@cpan.org>',
   LICENSE => 'perl',
   PREREQ_PM => {
@@ -15,9 +15,9 @@ WriteMakefile(
   META_MERGE => {
     resources => {
       license => 'http://dev.perl.org/licenses/',
-      homepage => 'https://metacpan.org/release/Mojolicious-Plugin-Bootstrap',
-      bugtracker => 'https://github.com/jhthorsen/mojolicious-plugin-bootstrap/issues',
-      repository => 'https://github.com/jhthorsen/mojolicious-plugin-bootstrap',
+      homepage => 'https://metacpan.org/release/Mojolicious-Plugin-Bootstrap3',
+      bugtracker => 'https://github.com/jhthorsen/mojolicious-plugin-bootstrap3/issues',
+      repository => 'https://github.com/jhthorsen/mojolicious-plugin-bootstrap3',
     },
   },
   test => {
