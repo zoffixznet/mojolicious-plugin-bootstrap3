@@ -32,9 +32,10 @@ STATIC FILE STRUCTURE
 
     public/sass/bootstrap.scss
     <https://github.com/twbs/bootstrap-sass/blob/master/vendor/assets/styles
-    heets/bootstrap.scss> is probably the file that you want to replace, to
-    make the generated bootstrap file smaller or simply customize the
-    included files.
+    heets/bootstrap.scss> and public/sass/bootstrap/_variables.scss
+    <https://github.com/twbs/bootstrap-sass/blob/master/vendor/assets/styles
+    heets/bootstrap/_variables.scss> are probably the files that you want to
+    replace, to make the generated bootstrap file smaller and more personal.
 
       font/glyphicons-halflings-regular.eot
       font/glyphicons-halflings-regular.svg

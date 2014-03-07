@@ -38,8 +38,10 @@ options.
 You can replace any of these static files in your own project.
 
 L<public/sass/bootstrap.scss|https://github.com/twbs/bootstrap-sass/blob/master/vendor/assets/stylesheets/bootstrap.scss>
-is probably the file that you want to replace, to make the generated bootstrap
-file smaller or simply customize the included files.
+and
+L<public/sass/bootstrap/_variables.scss|https://github.com/twbs/bootstrap-sass/blob/master/vendor/assets/stylesheets/bootstrap/_variables.scss>
+are probably the files that you want to replace, to make the generated
+bootstrap file smaller and more personal.
 
   font/glyphicons-halflings-regular.eot
   font/glyphicons-halflings-regular.svg
