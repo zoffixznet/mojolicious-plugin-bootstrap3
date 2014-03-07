@@ -6,7 +6,7 @@ Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 =head1 VERSION
 
-3.1001, Bootstrap 3.1.1
+3.1001
 
 =head1 DESCRIPTION
 

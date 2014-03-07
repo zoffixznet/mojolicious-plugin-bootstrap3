@@ -2,7 +2,7 @@ NAME
     Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 VERSION
-    3.1001, Bootstrap 3.1.1
+    3.1001
 
 DESCRIPTION
     Mojolicious::Plugin::Bootstrap3 is used to include
@@ -96,6 +96,15 @@ STATIC FILE STRUCTURE
       sass/bootstrap/_wells.scss
 
 METHODS
+  asset_path
+      $path = Mojolicious::Plugin::Bootstrap3->asset_path($type);
+      $path = $self->asset_path($type);
+
+    Returns the base path to the assets bundled with this module.
+
+    Set $type to "sass" if you want a return value that is suitable for the
+    "SASS_PATH" environment variable.
+
   register
       $app->plugin(
         bootstrap => {
