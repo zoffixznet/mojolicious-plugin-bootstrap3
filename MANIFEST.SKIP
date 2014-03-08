@@ -20,5 +20,4 @@ Makefile$
 \.sass-cache
 \.git/
 \.swp
-\.gitignore
 \.travis.yml

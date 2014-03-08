@@ -10,6 +10,9 @@ my $vendor = 'vendor/assets';
 mkdir $base;
 plan skip_all => "Could not create $base: $!" unless -d $base;
 
+mkdir "t/public";
+mkdir "t/public/packed";
+
 unless(-d "$base/font") {
   mkdir "$base/font";
 
