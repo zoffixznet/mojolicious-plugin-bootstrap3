@@ -19,3 +19,7 @@ MYMETA*
 .rvmrc
 .sass-cache
 *.swp
+tmp/
+test/screenshots/
+test/dummy/log/*.log
+.DS_Store
