@@ -32,7 +32,7 @@ sub copy_javascript {
 sub copy_sass_bootstrap {
   mkdir "$base/sass";
   mkdir "$base/sass/bootstrap";
-  link "$vendor/stylesheets/bootstrap.scss", "$base/sass/bootstrap.scss" or die "$_: $!";
+  link "$vendor/stylesheets/bootstrap.scss", "$base/sass/bootstrap.scss" or die "link bootstrap.scss: $!";
 
   for(qw(
     _alerts.scss _badges.scss _breadcrumbs.scss _button-groups.scss _buttons.scss _carousel.scss
@@ -54,16 +54,22 @@ sub import {
   strict->import;
   warnings->import;
 
-  $base = "blib/$base" if -d "blib";
-  mkdir $base;
-  plan skip_all => "Could not create $base: $!" unless -d $base;
-
   mkdir "t/public";
   mkdir "t/public/packed";
 
-  $class->copy_font unless -d "$base/font";
-  $class->copy_javascript unless -d "$base/js/bootstrap";
-  $class->copy_sass_bootstrap unless -d "$base/sass/bootstrap";
+  if(-d $vendor) {
+    $base = "blib/$base" if -d "blib";
+    mkdir $base;
+    plan skip_all => "Could not create $base: $!" unless -d $base;
+
+    $class->copy_font unless -d "$base/font";
+    $class->copy_javascript unless -d "$base/js/bootstrap";
+    $class->copy_sass_bootstrap unless -d "$base/sass/bootstrap";
+  }
+
+  if(!-e "$base/sass/bootstrap.scss") {
+    BAIL_OUT "$base/sass/bootstrap.scss is missing!";
+  }
 
   eval qq[
     package $caller;

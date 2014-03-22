@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
+3.1005   Sat Mar 22 18:10:14 2014
+       * Fix unittests
+
 3.1004   Sat Mar 22 15:53:57 2014
        * Fix missing _field-with-error.scss file
 
