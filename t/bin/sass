@@ -1,0 +1,2 @@
+#!/bin/sh
+echo "I SHOULD NOT BE CALLED $0";

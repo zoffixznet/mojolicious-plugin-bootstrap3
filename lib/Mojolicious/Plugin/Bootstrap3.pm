@@ -6,7 +6,7 @@ Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 =head1 VERSION
 
-3.1006
+3.1007
 
 =head1 DESCRIPTION
 
@@ -160,7 +160,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions 'catdir';
 use Cwd ();
 
-our $VERSION = '3.1006';
+our $VERSION = '3.1007';
 
 =head1 METHODS
 
@@ -236,7 +236,7 @@ sub register {
   $app->plugin('AssetPack') unless eval { $app->asset };
 
   $config->{css} ||= [qw( bootstrap.scss )];
-  $config->{js} ||= [qw( affix.js alert.js button.js carousel.js collapse.js dropdown.js modal.js popover.js scrollspy.js tab.js tooltip.js transition.js )];
+  $config->{js} ||= [qw( transition.js alert.js button.js carousel.js collapse.js dropdown.js modal.js tooltip.js popover.js scrollspy.js tab.js affix.js )];
   $config->{jquery} //= 1;
 
   push @{ $app->static->paths }, $self->asset_path;

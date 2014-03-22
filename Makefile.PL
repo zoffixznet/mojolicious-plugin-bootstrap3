@@ -7,7 +7,7 @@ WriteMakefile(
   LICENSE => 'perl',
   PREREQ_PM => {
     'Mojolicious' => '4.30',
-    'Mojolicious::Plugin::AssetPack' => '0.0601',
+    'Mojolicious::Plugin::AssetPack' => '0.08',
   },
   BUILD_REQUIRES => {
     'Test::More' => '0.90',

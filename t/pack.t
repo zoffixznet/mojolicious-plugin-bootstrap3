@@ -1,5 +1,7 @@
 use t::Helper;
 
+$ENV{PATH} = join ':', grep $_, 't/bin/', $ENV{PATH};
+
 {
   use Mojolicious::Lite;
   plugin 'bootstrap3';
@@ -11,18 +13,20 @@ use t::Helper;
 }
 
 my $t = Test::Mojo->new;
+my $css = "/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css";
+my $js = "/packed/bootstrap-69952743750363c3b3ec4b9528b838f6.js";
 
 plan skip_all => 'sass is not present' unless $t->app->asset->preprocessors->has_subscribers('scss');
 
-$t->get_ok('/css')->status_is(200)->element_exists('link[href="/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css"]');
-$t->get_ok('/js')->status_is(200)->element_exists('script[src="/packed/bootstrap-6d87c9526ee3bab443a129357c4a072b.js"]');
+$t->get_ok('/css')->status_is(200)->element_exists(qq(link[href="$css"]));
+$t->get_ok('/js')->status_is(200)->element_exists(qq(script[src="$js"]));
 
-$t->get_ok('/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css')
+$t->get_ok($css)
   ->status_is(200)
   ->content_like(qr{Glyphicons Halflings}, 'Glyphicons Halflings')
   ;
 
-$t->get_ok('/packed/bootstrap-6d87c9526ee3bab443a129357c4a072b.js')
+$t->get_ok($js)
   ->status_is(200)
   ->content_like(qr{affix\.js}, 'affix.js')
   ->content_like(qr{alert\.js}, 'alert.js')
@@ -49,10 +53,11 @@ SKIP: {
     next unless /^bootstrap-/;
     unlink "lib/Mojolicious/Plugin/Bootstrap3/packed/$_";
     link "t/public/packed/$_", "lib/Mojolicious/Plugin/Bootstrap3/packed/$_" or die "link t/public/packed/$_: $!";
+    unlink "t/public/packed/$_" or die "unlink t/public/packed/$_: $!";
   }
 
-  $t->get_ok('/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css')->status_is(200);
-  $t->get_ok('/packed/bootstrap-6d87c9526ee3bab443a129357c4a072b.js')->status_is(200);
+  $t->get_ok($css)->status_is(200);
+  $t->get_ok($js)->status_is(200);
 }
 
 done_testing;

@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
+3.1007   Sat Mar 22 19:17:31 2014
+       * Fix popover.js require tooltip.js
+
 3.1006   Sat Mar 22 18:29:52 2014
        * Fix documentation
 
