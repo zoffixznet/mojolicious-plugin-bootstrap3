@@ -38,6 +38,7 @@ for my $file (qw(
   /sass/bootstrap/_component-animations.scss
   /sass/bootstrap/_dropdowns.scss
   /sass/bootstrap/_forms.scss
+  /sass/bootstrap/_field-with-error.scss
   /sass/bootstrap/_glyphicons.scss
   /sass/bootstrap/_grid.scss
   /sass/bootstrap/_input-groups.scss

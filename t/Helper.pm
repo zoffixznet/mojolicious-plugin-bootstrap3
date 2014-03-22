@@ -7,13 +7,7 @@ use Test::Mojo;
 my $base = 'lib/Mojolicious/Plugin/Bootstrap3';
 my $vendor = 'vendor/assets';
 
-mkdir $base;
-plan skip_all => "Could not create $base: $!" unless -d $base;
-
-mkdir "t/public";
-mkdir "t/public/packed";
-
-unless(-d "$base/font") {
+sub copy_font {
   mkdir "$base/font";
 
   for(qw(
@@ -24,7 +18,7 @@ unless(-d "$base/font") {
   }
 }
 
-unless(-d "$base/js/bootstrap") {
+sub copy_javascript {
   mkdir "$base/js/bootstrap";
 
   for(qw(
@@ -35,14 +29,14 @@ unless(-d "$base/js/bootstrap") {
   }
 }
 
-unless(-d "$base/sass/bootstrap") {
+sub copy_sass_bootstrap {
   mkdir "$base/sass";
   mkdir "$base/sass/bootstrap";
   link "$vendor/stylesheets/bootstrap.scss", "$base/sass/bootstrap.scss" or die "$_: $!";
 
   for(qw(
     _alerts.scss _badges.scss _breadcrumbs.scss _button-groups.scss _buttons.scss _carousel.scss
-    _close.scss _code.scss _component-animations.scss _dropdowns.scss _forms.scss _glyphicons.scss
+    _close.scss _code.scss _component-animations.scss _dropdowns.scss _forms.scss _field-with-error.scss _glyphicons.scss
     _grid.scss _input-groups.scss _jumbotron.scss _labels.scss _list-group.scss _media.scss _mixins.scss
     _modals.scss _navbar.scss _navs.scss _normalize.scss _pager.scss _pagination.scss _panels.scss
     _popovers.scss _print.scss _progress-bars.scss _responsive-utilities.scss _scaffolding.scss
@@ -54,10 +48,22 @@ unless(-d "$base/sass/bootstrap") {
 }
 
 sub import {
+  my $class = shift;
   my $caller = caller;
 
   strict->import;
   warnings->import;
+
+  $base = "blib/$base" if -d "blib";
+  mkdir $base;
+  plan skip_all => "Could not create $base: $!" unless -d $base;
+
+  mkdir "t/public";
+  mkdir "t/public/packed";
+
+  $class->copy_font unless -d "$base/font";
+  $class->copy_javascript unless -d "$base/js/bootstrap";
+  $class->copy_sass_bootstrap unless -d "$base/sass/bootstrap";
 
   eval qq[
     package $caller;
