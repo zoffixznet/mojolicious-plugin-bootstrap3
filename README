@@ -2,7 +2,7 @@ NAME
     Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 VERSION
-    3.1002
+    3.1003
 
 DESCRIPTION
     Mojolicious::Plugin::Bootstrap3 is used to include
@@ -65,6 +65,7 @@ STATIC FILE STRUCTURE
       sass/bootstrap/_code.scss
       sass/bootstrap/_component-animations.scss
       sass/bootstrap/_dropdowns.scss
+      sass/bootstrap/_field-with-error.scss
       sass/bootstrap/_forms.scss
       sass/bootstrap/_glyphicons.scss
       sass/bootstrap/_grid.scss
@@ -94,6 +95,35 @@ STATIC FILE STRUCTURE
       sass/bootstrap/_utilities.scss
       sass/bootstrap/_variables.scss
       sass/bootstrap/_wells.scss
+
+  Non-standard files
+    Some of the static files are not bundled with the original Bootstrap
+    distribution.
+
+    *   js/jquery-1.11.0.min.js
+
+        The jQuery bundled with this distribution will always be compatible
+        with the Bootstrap javascript files. It might change minor version,
+        but it is very unlikely that it will change much. Exceptions from
+        this rule is if the Bootstrap javascripts should require a newer
+        version to function properly.
+
+    *   sass/bootstrap/_field-with-error.scss
+
+        This SASS file need to be included manually. It is used to style
+        .field-with-error tags, the same way as .has-error
+        <http://getbootstrap.com/css/#forms-control-validation>.
+
+        Example of markup that will be styled on invalid input:
+
+          <div class="form-group">
+            %= label_for 'username', 'Username', class => 'col-sm-2 control-label'
+            <div class="col-sm-4">
+              %= text_field 'username', class => 'form-control'
+            </div>
+          </div>
+
+        This is EXPERIMENTAL and subject to change.
 
 METHODS
   asset_path

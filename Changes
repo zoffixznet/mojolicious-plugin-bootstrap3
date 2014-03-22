@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
+3.1003   Sat Mar 22 15:32:02 2014
+       * Add _field-with-error.scss
+
 3.1002   Sat Mar  8 19:03:05 2014
        * Fix missing "t/public/packed" directory
 

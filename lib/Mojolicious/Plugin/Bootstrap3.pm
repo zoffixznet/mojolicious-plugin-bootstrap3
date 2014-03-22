@@ -6,7 +6,7 @@ Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 =head1 VERSION
 
-3.1002
+3.1003
 
 =head1 DESCRIPTION
 
@@ -71,6 +71,7 @@ bootstrap file smaller and more personal.
   sass/bootstrap/_code.scss
   sass/bootstrap/_component-animations.scss
   sass/bootstrap/_dropdowns.scss
+  sass/bootstrap/_field-with-error.scss
   sass/bootstrap/_forms.scss
   sass/bootstrap/_glyphicons.scss
   sass/bootstrap/_grid.scss
@@ -101,13 +102,48 @@ bootstrap file smaller and more personal.
   sass/bootstrap/_variables.scss
   sass/bootstrap/_wells.scss
 
+=head2 Non-standard files
+
+Some of the L<static files|/STATIC FILE STRUCTURE> are not bundled with the
+original Bootstrap distribution.
+
+=over 4
+
+=item * js/jquery-1.11.0.min.js
+
+The jQuery bundled with this distribution will always be compatible with
+the Bootstrap javascript files. It might change minor version, but it is
+very unlikely that it will change much. Exceptions from this rule is if
+the Bootstrap javascripts should require a newer version to function
+properly.
+
+=item * sass/bootstrap/_field-with-error.scss
+
+This SASS file need to be included manually. It is used to style
+L<.field-with-error|Mojolicious::Plugin::TagHelpers/DESCRIPTION>
+tags, the same way as L<.has-error|http://getbootstrap.com/css/#forms-control-validation>.
+
+Example of markup that will be styled on
+L<invalid input|Mojolicious::Controller/validation>:
+
+  <div class="form-group">
+    %= label_for 'username', 'Username', class => 'col-sm-2 control-label'
+    <div class="col-sm-4">
+      %= text_field 'username', class => 'form-control'
+    </div>
+  </div>
+
+This is EXPERIMENTAL and subject to change.
+
+=back
+
 =cut
 
 use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions 'catdir';
 use Cwd ();
 
-our $VERSION = '3.1002';
+our $VERSION = '3.1003';
 
 =head1 METHODS
 

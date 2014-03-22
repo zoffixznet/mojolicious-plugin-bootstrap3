@@ -14,10 +14,10 @@ my $t = Test::Mojo->new;
 
 plan skip_all => 'sass is not present' unless $t->app->asset->preprocessors->has_subscribers('scss');
 
-$t->get_ok('/css')->status_is(200)->element_exists('link[href="/packed/bootstrap-4a6855540fc3feeb306465859305cd6e.css"]');
+$t->get_ok('/css')->status_is(200)->element_exists('link[href="/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css"]');
 $t->get_ok('/js')->status_is(200)->element_exists('script[src="/packed/bootstrap-6d87c9526ee3bab443a129357c4a072b.js"]');
 
-$t->get_ok('/packed/bootstrap-4a6855540fc3feeb306465859305cd6e.css')
+$t->get_ok('/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css')
   ->status_is(200)
   ->content_like(qr{Glyphicons Halflings}, 'Glyphicons Halflings')
   ;
@@ -51,7 +51,7 @@ SKIP: {
     link "t/public/packed/$_", "lib/Mojolicious/Plugin/Bootstrap3/packed/$_" or die "link t/public/packed/$_: $!";
   }
 
-  $t->get_ok('/packed/bootstrap-4a6855540fc3feeb306465859305cd6e.css')->status_is(200);
+  $t->get_ok('/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css')->status_is(200);
   $t->get_ok('/packed/bootstrap-6d87c9526ee3bab443a129357c4a072b.js')->status_is(200);
 }
 
