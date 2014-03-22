@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
+3.1006   Sat Mar 22 18:29:52 2014
+       * Fix documentation
+
 3.1005   Sat Mar 22 18:10:14 2014
        * Fix unittests
 

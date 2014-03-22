@@ -2,7 +2,7 @@ NAME
     Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 VERSION
-    3.1005
+    3.1006
 
 DESCRIPTION
     Mojolicious::Plugin::Bootstrap3 is used to include
@@ -13,16 +13,30 @@ DESCRIPTION
     pack.
 
 SYNOPSIS
+  Mojolicious::Lite
       use Mojolicious::Lite;
-      plugin 'bootstrap';
-      get '/' => 'index';
+      plugin "bootstrap3";
+      get "/" => "index";
       app->start;
 
-      __END__
-      @@ index.html.ep
-      %= asset 'bootstrap.css';
-      %= asset 'bootstrap.js';
-      <p class="alert alert-danger">Danger, danger! Hight Voltage!</p>
+  Mojolicious
+      sub startup {
+        my $self = shift;
+
+        $self->plugin("bootstrap3");
+      }
+
+  Template
+      <!doctype html>
+      <html>
+        <head>
+          %= asset "bootstrap.css"
+          %= asset "bootstrap.js"
+        </head>
+        <body>
+          <p class="alert alert-danger">Danger, danger! High Voltage!</p>
+        </body>
+      </html>
 
     TIP! You might want to load Mojolicious::Plugin::AssetPack yourself to
     specify options.
@@ -117,9 +131,9 @@ STATIC FILE STRUCTURE
         Example of markup that will be styled on invalid input:
 
           <div class="form-group">
-            %= label_for 'username', 'Username', class => 'col-sm-2 control-label'
+            %= label_for "username", "Username", class => "col-sm-2 control-label"
             <div class="col-sm-4">
-              %= text_field 'username', class => 'form-control'
+              %= text_field "username", class => "form-control"
             </div>
           </div>
 
@@ -137,7 +151,7 @@ METHODS
 
   register
       $app->plugin(
-        bootstrap => {
+        bootstrap3 => {
           css => [qw( bootstrap.scss )],
           js => [qw( button.js collapse.js ... )],
           jquery => $bool, # default true
@@ -172,6 +186,25 @@ METHODS
         This will include the bundled jQuery <http://jquery.com/> version in
         the bootstrap.js asset. Set this to 0 if you include your own
         jQuery.
+
+CREDITS
+    bootstrap-sass <https://github.com/twbs/bootstrap-sass> has a number of
+    major contributors:
+
+      Thomas McDonald
+      Tristan Harward
+      Peter Gumeson
+      Gleb Mazovetskiy
+
+    and a significant number of other contributors
+    <https://github.com/twbs/bootstrap-sass/graphs/contributors>
+
+LICENSE
+    Bootstrap is licensed under MIT
+    <https://github.com/twbs/bootstrap/blob/master/LICENSE>
+
+    Mojolicious is licensed under Artistic License version 2.0 and so is
+    this code.
 
 AUTHOR
     Jan Henning Thorsen - "jhthorsen@cpan.org"

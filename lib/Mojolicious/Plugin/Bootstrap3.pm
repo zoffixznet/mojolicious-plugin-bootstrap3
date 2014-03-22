@@ -6,7 +6,7 @@ Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 =head1 VERSION
 
-3.1005
+3.1006
 
 =head1 DESCRIPTION
 
@@ -19,16 +19,33 @@ L<modifications|/register> to the css pack.
 
 =head1 SYNOPSIS
 
+=head2 Mojolicious::Lite
+
   use Mojolicious::Lite;
-  plugin 'bootstrap';
-  get '/' => 'index';
+  plugin "bootstrap3";
+  get "/" => "index";
   app->start;
 
-  __END__
-  @@ index.html.ep
-  %= asset 'bootstrap.css';
-  %= asset 'bootstrap.js';
-  <p class="alert alert-danger">Danger, danger! Hight Voltage!</p>
+=head2 Mojolicious
+
+  sub startup {
+    my $self = shift;
+
+    $self->plugin("bootstrap3");
+  }
+
+=head2 Template
+
+  <!doctype html>
+  <html>
+    <head>
+      %= asset "bootstrap.css"
+      %= asset "bootstrap.js"
+    </head>
+    <body>
+      <p class="alert alert-danger">Danger, danger! High Voltage!</p>
+    </body>
+  </html>
 
 TIP! You might want to load L<Mojolicious::Plugin::AssetPack> yourself to specify
 options.
@@ -127,9 +144,9 @@ Example of markup that will be styled on
 L<invalid input|Mojolicious::Controller/validation>:
 
   <div class="form-group">
-    %= label_for 'username', 'Username', class => 'col-sm-2 control-label'
+    %= label_for "username", "Username", class => "col-sm-2 control-label"
     <div class="col-sm-4">
-      %= text_field 'username', class => 'form-control'
+      %= text_field "username", class => "form-control"
     </div>
   </div>
 
@@ -143,7 +160,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions 'catdir';
 use Cwd ();
 
-our $VERSION = '3.1005';
+our $VERSION = '3.1006';
 
 =head1 METHODS
 
@@ -172,7 +189,7 @@ sub asset_path {
 =head2 register
 
   $app->plugin(
-    bootstrap => {
+    bootstrap3 => {
       css => [qw( bootstrap.scss )],
       js => [qw( button.js collapse.js ... )],
       jquery => $bool, # default true
@@ -237,6 +254,24 @@ sub register {
     );
   }
 }
+
+=head1 CREDITS
+
+L<bootstrap-sass|https://github.com/twbs/bootstrap-sass> has a number of major
+contributors:
+
+  Thomas McDonald
+  Tristan Harward
+  Peter Gumeson
+  Gleb Mazovetskiy
+
+and a L<significant number of other contributors|https://github.com/twbs/bootstrap-sass/graphs/contributors>
+
+=head1 LICENSE
+
+Bootstrap is licensed under L<MIT|https://github.com/twbs/bootstrap/blob/master/LICENSE>
+
+Mojolicious is licensed under Artistic License version 2.0 and so is this code.
 
 =head1 AUTHOR
 
