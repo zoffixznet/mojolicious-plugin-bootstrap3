@@ -1,5 +1,11 @@
 bootstrap.css
 bootstrap-responsive.css
+Gemfile.lock
+*.gemfile.lock
+.rvmrc
+.rbenv-version
+
+# Ignore bundler config
 /.bundle
 /test/dummy/log/*.log
 /test/screenshots/
