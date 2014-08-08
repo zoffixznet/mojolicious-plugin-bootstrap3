@@ -1,6 +1,8 @@
 use t::Helper;
+use Cwd 'abs_path';
+use File::Spec::Functions 'catdir';
 
-$ENV{PATH} = join ':', grep $_, 't/bin/', $ENV{PATH};
+$ENV{PATH} = join ':', grep $_, abs_path(catdir qw( t bin )), $ENV{PATH};
 
 {
   use Mojolicious::Lite;
@@ -9,17 +11,18 @@ $ENV{PATH} = join ':', grep $_, 't/bin/', $ENV{PATH};
     my $c = shift;
     $c->render(text => $c->asset('bootstrap.'.$c->stash('type')));
   };
-  app->start;
 }
 
 my $t = Test::Mojo->new;
-my $css = "/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css";
-my $js = "/packed/bootstrap-69952743750363c3b3ec4b9528b838f6.js";
+my ($css, $js);
 
 plan skip_all => 'sass is not present' unless $t->app->asset->preprocessors->has_subscribers('scss');
 
-$t->get_ok('/css')->status_is(200)->element_exists(qq(link[href="$css"]));
-$t->get_ok('/js')->status_is(200)->element_exists(qq(script[src="$js"]));
+$t->get_ok('/css')->status_is(200);
+$css = $t->tx->res->dom->at('link')->{href};
+
+$t->get_ok('/js')->status_is(200);
+$js = $t->tx->res->dom->at('script')->{src};
 
 $t->get_ok($css)
   ->status_is(200)

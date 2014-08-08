@@ -3,7 +3,6 @@ use t::Helper;
 {
   use Mojolicious::Lite;
   plugin 'bootstrap3';
-  app->start;
 }
 
 my $t = Test::Mojo->new;

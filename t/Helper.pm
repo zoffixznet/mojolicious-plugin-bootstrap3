@@ -1,50 +1,55 @@
 package t::Helper;
 BEGIN { $ENV{MOJO_MODE} ||= 'production' }
 use Mojo::Base -strict;
-use Test::More;
 use Test::Mojo;
+use Test::More;
+use File::Basename ();
+use File::Find;
+use File::Path ();
+use File::Spec::Functions qw( catdir catfile splitdir );
+use constant DEBUG => $ENV{MOJO_BOOTSTRAP3_DEBUG} || 0;
 
-my $base = 'lib/Mojolicious/Plugin/Bootstrap3';
-my $vendor = 'vendor/assets';
+my $base = catdir qw( lib Mojolicious Plugin Bootstrap3 );
 
-sub copy_font {
-  mkdir "$base/font";
+sub copy {
+  my $class = shift;
 
-  for(qw(
-    glyphicons-halflings-regular.eot glyphicons-halflings-regular.svg
-    glyphicons-halflings-regular.ttf glyphicons-halflings-regular.woff
-  )) {
-    link "$vendor/fonts/bootstrap/$_", "$base/font/$_" or die "$_: $!";
-  }
+  find(
+    {
+      follow => 1,
+      no_chdir => 1,
+      wanted => sub {
+        return unless -f;
+        my $file = $_;
+        my $name = File::Basename::basename($file);
+        my $to_dir = $class->file_to_dir($file) or return;
+        my $to_file = catfile $to_dir, $name;
+
+        warn "[TEST] cp $file $to_file\n" if DEBUG;
+        File::Path::make_path($to_dir) or die "mkdir $to_dir: $!" unless -d $to_dir;
+        unlink $to_file if -e $to_file;
+        link $file => $to_file or die "cp $file $to_file: $!";
+      },
+    },
+    'assets',
+  );
 }
 
-sub copy_javascript {
-  mkdir "$base/js/bootstrap";
+sub file_to_dir {
+  my ($class, $file) = @_;
+  my @path = splitdir $file;
 
-  for(qw(
-    button.js carousel.js scrollspy.js popover.js dropdown.js tooltip.js alert.js
-    transition.js affix.js collapse.js modal.js tab.js
-  )) {
-    link "$vendor/javascripts/bootstrap/$_", "$base/js/bootstrap/$_" or die "$_: $!";
+  pop @path unless -d $file;
+
+  while (@path) {
+    my $p = shift @path;
+    last if $p eq 'stylesheets';
   }
-}
 
-sub copy_sass_bootstrap {
-  mkdir "$base/sass";
-  mkdir "$base/sass/bootstrap";
-  link "$vendor/stylesheets/bootstrap.scss", "$base/sass/bootstrap.scss" or die "link bootstrap.scss: $!";
-
-  for(qw(
-    _alerts.scss _badges.scss _breadcrumbs.scss _button-groups.scss _buttons.scss _carousel.scss
-    _close.scss _code.scss _component-animations.scss _dropdowns.scss _forms.scss _field-with-error.scss _glyphicons.scss
-    _grid.scss _input-groups.scss _jumbotron.scss _labels.scss _list-group.scss _media.scss _mixins.scss
-    _modals.scss _navbar.scss _navs.scss _normalize.scss _pager.scss _pagination.scss _panels.scss
-    _popovers.scss _print.scss _progress-bars.scss _responsive-utilities.scss _scaffolding.scss
-    _tables.scss _theme.scss _thumbnails.scss _tooltip.scss _type.scss _utilities.scss
-    _variables.scss _wells.scss
-  )) {
-    link "$vendor/stylesheets/bootstrap/$_", "$base/sass/bootstrap/$_" or die "$_: $!";
-  }
+  return catdir $base, 'font' if $file =~ /\bfonts\b/;
+  return catdir $base, 'js', 'bootstrap' if $file =~ /\.js$/;
+  return catdir $base, 'sass', @path if $file =~ /\.scss$/;
+  return;
 }
 
 sub import {
@@ -54,21 +59,20 @@ sub import {
   strict->import;
   warnings->import;
 
-  mkdir "t/public";
-  mkdir "t/public/packed";
+  mkdir catdir qw( t public );
+  mkdir catdir qw( t public/packed );
 
-  if(-d $vendor) {
-    $base = "blib/$base" if -d "blib";
+  if (-d 'assets') {
+    $base = catdir 'blib', $base if -d 'blib';
     mkdir $base;
     plan skip_all => "Could not create $base: $!" unless -d $base;
-
-    $class->copy_font unless -d "$base/font";
-    $class->copy_javascript unless -d "$base/js/bootstrap";
-    $class->copy_sass_bootstrap unless -d "$base/sass/bootstrap";
+    $class->copy;
   }
 
-  if(!-e "$base/sass/bootstrap.scss") {
-    BAIL_OUT "$base/sass/bootstrap.scss is missing!";
+  my $check = catfile $base, 'sass', 'bootstrap.scss';
+
+  if (!-e $check) {
+    plan skip_all => "$check does not exists. Cannot run tests";
   }
 
   eval qq[

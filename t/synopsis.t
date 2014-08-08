@@ -18,8 +18,8 @@ for my $mode (sort { $mode{$a} <=> $mode{$b} } keys %mode) {
   $t->get_ok('/');
 
   if ($mode eq 'production') {
-    $t->element_exists(qq(link[href="/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css"]));
-    $t->element_exists(qq(script[src="/packed/bootstrap-69952743750363c3b3ec4b9528b838f6.js"]));
+    $t->element_exists(qq(link[href^="/packed/bootstrap-"]));
+    $t->element_exists(qq(script[src^="/packed/bootstrap-"]));
   }
   else {
     for(qw(
@@ -41,7 +41,7 @@ for my $mode (sort { $mode{$a} <=> $mode{$b} } keys %mode) {
     }
 
     local $TODO = $t->app->asset->preprocessors->has_subscribers('sass') ? undef : 'AssetPack 0.21 is required';
-    $t->element_exists(qq(link[href="/packed/bootstrap-3ad501f5241e958b2bb89b4add1de793.css"]));
+    $t->element_exists(qq(link[href^="/packed/bootstrap-"]));
     $t->get_ok(($t->tx->res->dom->at('link') || {})->{href} || '/')->status_is(200);
   }
 }

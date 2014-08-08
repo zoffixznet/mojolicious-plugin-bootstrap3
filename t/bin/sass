@@ -1,2 +1,1 @@
-#!/bin/sh
-echo "I SHOULD NOT BE CALLED $0";
+#!/bin/invalid-hash-bang
