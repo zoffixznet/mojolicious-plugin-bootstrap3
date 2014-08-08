@@ -1,6 +1,7 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
 3.2000
+       * Add demo.pl for visual verification
        * Merged with Bootstrap v3.2.0
          https://github.com/twbs/bootstrap-sass/commit/a5f5954268779ce0faf7607b3c35191a8d0fdfe6
 
