@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
+3.2001
+       * Bumped required AssetPack version to 0.24
+
 3.2000   Fri Aug  8 11:18:36 2014
        * Add demo.pl for visual verification
        * Merged with Bootstrap v3.2.0
