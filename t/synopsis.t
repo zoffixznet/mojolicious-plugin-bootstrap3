@@ -40,7 +40,7 @@ for my $mode (sort { $mode{$a} <=> $mode{$b} } keys %mode) {
       $t->element_exists(qq(script[src="/js/$_"]));
     }
 
-    local $TODO = $t->app->asset->preprocessors->has_subscribers('sass') ? undef : 'AssetPack 0.21 is required';
+    local $TODO = $t->app->asset->preprocessors->can_process('sass') ? undef : 'AssetPack 0.21 is required';
     $t->element_exists(qq(link[href^="/packed/bootstrap-"]));
     $t->get_ok(($t->tx->res->dom->at('link') || {})->{href} || '/')->status_is(200);
   }

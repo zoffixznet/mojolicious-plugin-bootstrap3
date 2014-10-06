@@ -16,7 +16,7 @@ $ENV{PATH} = join ':', grep $_, abs_path(catdir qw( t bin )), $ENV{PATH};
 my $t = Test::Mojo->new;
 my ($css, $js);
 
-plan skip_all => 'sass is not present' unless $t->app->asset->preprocessors->has_subscribers('scss');
+plan skip_all => 'sass is not present' unless $t->app->asset->preprocessors->can_process('scss');
 
 $t->get_ok('/css')->status_is(200);
 $css = $t->tx->res->dom->at('link')->{href};

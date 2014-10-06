@@ -6,7 +6,7 @@ Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 =head1 VERSION
 
-3.2001
+3.2002
 
 =head1 DESCRIPTION
 
@@ -160,7 +160,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions 'catdir';
 use Cwd ();
 
-our $VERSION = '3.2001';
+our $VERSION = '3.2002';
 
 =head1 METHODS
 

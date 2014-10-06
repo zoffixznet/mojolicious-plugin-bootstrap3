@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
+3.2002   Tue Oct  7 00:20:37 2014
+       * Bumped required AssetPack version to 0.26
+
 3.2001   Sun Oct  5 22:44:30 2014
        * Bumped required AssetPack version to 0.24
 
