@@ -8,6 +8,7 @@ use File::Find;
 use File::Path qw( make_path remove_tree );
 
 plan skip_all => 'Cannot copy files without _bootstrap.scss' unless -r 'assets/stylesheets/_bootstrap.scss';
+plan skip_all => 'No need to run on install' if -d 'blib';
 
 my $CAN_SASS = do {
   my $app = Mojolicious->new;
@@ -31,6 +32,7 @@ find(
       my $dir = dirname($dest);
       make_path($dir) or die "mkdir $dir: $!" unless -d $dir;
       copy $File::Find::name => $dest or die "cp $File::Find::name $dest: $!";
+      diag "cp $File::Find::name $dest";
     },
   },
   'assets',
@@ -73,7 +75,7 @@ done_testing;
 sub dest {
   my $file = $_[0];
   my $name = basename $file;
-  my @path = split '/', dirname $file;
+  my @path = grep {length} split '/', dirname $file;
 
   while (@path) {
     my $p = shift @path;
@@ -81,11 +83,12 @@ sub dest {
   }
 
   $name = 'bootstrap.scss' if $name eq '_bootstrap.scss';
+  unshift @path, 'sass';
   local $" = '/';
 
   return "$BASE/font/$name"         if $file =~ /\bfonts\b/;
   return "$BASE/js/bootstrap/$name" if $file =~ /\.js$/;
-  return "$BASE/sass/@path/$name"   if $file =~ /\.scss$/;
+  return "$BASE/@path/$name"        if $file =~ /\.scss$/;
   return;
 }
 
