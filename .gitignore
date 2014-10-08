@@ -21,3 +21,8 @@ node_modules
 # Mojolicious::Plugin::Bootstrap3
 /local/
 *.swp
+Makefile
+Makefile.*
+MYMETA.*
+blib/
+pm_to_blib

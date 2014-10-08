@@ -1,0 +1,39 @@
+Revision history for Mojolicious-Plugin-Bootstrap
+
+3.2003
+       * Rewrote module (Same API)
+       * Compatbible with AssetPack 0.28
+
+3.2002   Tue Oct  7 00:20:37 2014
+       * Require AssetPack 0.26
+
+3.2001   Sun Oct  5 22:44:30 2014
+       * Require AssetPack 0.24
+
+3.2000   Fri Aug  8 11:18:36 2014
+       * Add demo.pl for visual verification
+       * Merged with Bootstrap v3.2.0
+         https://github.com/twbs/bootstrap-sass/commit/a5f5954268779ce0faf7607b3c35191a8d0fdfe6
+
+3.1007   Sat Mar 22 19:17:31 2014
+       * Fix popover.js require tooltip.js
+
+3.1006   Sat Mar 22 18:29:52 2014
+       * Fix documentation
+
+3.1005   Sat Mar 22 18:10:14 2014
+       * Fix unittests
+
+3.1004   Sat Mar 22 15:53:57 2014
+       * Fix missing _field-with-error.scss file
+
+3.1003   Sat Mar 22 15:32:02 2014
+       * Add _field-with-error.scss
+
+3.1002   Sat Mar  8 19:03:05 2014
+       * Fix missing "t/public/packed" directory
+
+3.1001   Fri Mar  7 14:28:50 2014
+       * Started project
+       * Bundled Bootstrap 3.1.1 as packed and unpacked
+       * Bundled http://code.jquery.com/jquery-1.11.0.min.js
