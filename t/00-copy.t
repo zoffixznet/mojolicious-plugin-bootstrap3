@@ -31,6 +31,7 @@ find(
       my $dir = dirname($dest);
       make_path($dir) or die "mkdir $dir: $!" unless -d $dir;
       copy $File::Find::name => $dest or die "cp $File::Find::name $dest: $!";
+      diag "cp $File::Find::name $dest";
     },
   },
   'assets',
