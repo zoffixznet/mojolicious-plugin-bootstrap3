@@ -3,8 +3,12 @@ perl:
   - "5.20"
   - "5.16"
   - "5.10"
+env_DISABLED:
+  - "MOJO_ASSETPACK_DEBUG=1"
 install:
-  - "cpanm -n Test::Pod Test::Pod::Coverage"
+  - "cpanm -n Test::Pod Test::Pod::Coverage IO::Socket::SSL"
+  - "cpanm -n https://github.com/jhthorsen/mojolicious-plugin-assetpack/archive/master.tar.gz"
   - "cpanm -n --installdeps ."
+script_DISABLED: "perl Makefile.PL && make test TEST_VERBOSE=1"
 notifications:
   email: false
