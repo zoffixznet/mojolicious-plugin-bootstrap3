@@ -1,6 +1,6 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
-3.2003
+3.2003   Wed Oct  8 21:57:02 2014
        * Rewrote module (Same API)
        * Compatbible with AssetPack 0.30
 
