@@ -7,7 +7,8 @@ env:
   - "MOJO_ASSETPACK_DEBUG=1 HARNESS_VERBOSE=1 HARNESS_OPTIONS=j1 TEST_POD=1"
 install:
   - "cpanm -n Test::Pod Test::Pod::Coverage"
-  - "cpanm -n https://github.com/jhthorsen/mojolicious-plugin-assetpack/archive/master.tar.gz"
+  - "cpanm -n https://github.com/jhthorsen/mojolicious-plugin-assetpack/archive/error-messages.tar.gz"
   - "cpanm -n --installdeps ."
+script: "perl Makefile.PL && make test TEST_VERBOSE=1"
 notifications:
   email: false
