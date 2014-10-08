@@ -15,11 +15,11 @@ my $CAN_SASS = do {
   $app->asset->preprocessors->can_process('scss');
 };
 
-my $BASE = 'Mojolicious/Plugin/Bootstrap3';
-$BASE = -d "blib" ? "blib/lib/$BASE" : "lib/$BASE";
+my $BASE = 'lib/Mojolicious/Plugin/Bootstrap3';
 mkdir $BASE or die "mkdir $BASE: $!" unless -d $BASE;
 
-remove_tree "$BASE/$_" for qw( font js/bootstrap packed sass );
+remove_tree "$BASE/$_" for qw( font js/bootstrap sass );
+remove_tree "$BASE/packed" if $CAN_SASS;
 
 find(
   {
