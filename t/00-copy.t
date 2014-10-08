@@ -8,6 +8,7 @@ use File::Find;
 use File::Path qw( make_path remove_tree );
 
 plan skip_all => 'Cannot copy files without _bootstrap.scss' unless -r 'assets/stylesheets/_bootstrap.scss';
+plan skip_all => 'No need to run on install' if -d 'blib';
 
 my $CAN_SASS = do {
   my $app = Mojolicious->new;
