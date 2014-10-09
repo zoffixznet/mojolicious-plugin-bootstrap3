@@ -6,7 +6,7 @@ Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 =head1 VERSION
 
-3.2003
+3.2004
 
 =head1 DESCRIPTION
 
@@ -152,7 +152,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions 'catdir';
 use Cwd ();
 
-our $VERSION = '3.2003';
+our $VERSION = '3.2004';
 
 my @DEFAULT_CSS_FILES = qw( bootstrap.scss );
 my @DEFAULT_JS_FILES

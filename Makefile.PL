@@ -15,6 +15,6 @@ WriteMakefile(
     },
   },
   BUILD_REQUIRES => {'Test::More'  => '0.88'},
-  PREREQ_PM      => {'Mojolicious' => '5.00', 'Mojolicious::Plugin::AssetPack' => '0.30'},
+  PREREQ_PM      => {'Mojolicious' => '5.00', 'Mojolicious::Plugin::AssetPack' => '0.31'},
   test           => {TESTS         => 't/*.t'},
 );
