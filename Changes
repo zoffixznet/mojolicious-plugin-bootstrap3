@@ -1,8 +1,11 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
+3.2004   Thu Oct  9 15:13:47 2014
+       * Require AssetPack 0.31 to function properly without Sass
+
 3.2003   Wed Oct  8 21:57:02 2014
        * Rewrote module (Same API)
-       * Compatbible with AssetPack 0.30
+       * Require AssetPack 0.30
 
 3.2002   Tue Oct  7 00:20:37 2014
        * Require AssetPack 0.26
