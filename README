@@ -2,7 +2,7 @@ NAME
     Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 VERSION
-    3.2004
+    3.2005
 
 DESCRIPTION
     Mojolicious::Plugin::Bootstrap3 is used to include
