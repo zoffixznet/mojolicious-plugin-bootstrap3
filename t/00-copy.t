@@ -8,6 +8,7 @@ use File::Find;
 use File::Path qw( make_path remove_tree );
 
 plan skip_all => 'Cannot copy files without _bootstrap.scss' unless -r 'assets/stylesheets/_bootstrap.scss';
+plan skip_all => 'Cannot build files on install' if $INC{"Mojolicious/Plugin/Bootstrap3.pm"} =~ /\bblib\b/;
 
 my $CAN_SASS = do {
   my $app = Mojolicious->new;
@@ -44,7 +45,6 @@ SKIP: {
   $app->mode('production');
   $app->static->paths([Mojolicious::Plugin::Bootstrap3->asset_path]);
   $app->plugin('bootstrap3');
-  diag join ' ', packed_files();
   is_deeply([packed_files()], [qw( bootstrap.css bootstrap.js )], 'packed for production',);
 }
 
