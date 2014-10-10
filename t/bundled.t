@@ -15,6 +15,13 @@ $t->get_ok('/test1')->status_is(200)->text_like('script', qr{Bootstrap: affix\.j
   ->text_like('style', qr{\.navbar-fixed-bottom}, 'navbar-fixed-bottom')
   ->text_like('style', qr{\.btn-warning},         'btn-warning');
 
+my $font    = $t->tx->res->dom->at('style')->text;
+my $font_re = qr{"(\.\./fonts/bootstrap/glyphicons-halflings-regular\.eot)"};
+like $font, $font_re, 'correct font path';
+
+$font = $font =~ $font_re ? $1 : 'could-not-find-font-in-css';
+$t->get_ok("/packed/$font")->status_is(200);
+
 done_testing;
 
 __DATA__

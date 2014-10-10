@@ -19,7 +19,7 @@ my $CAN_SASS = do {
 my $BASE = 'lib/Mojolicious/Plugin/Bootstrap3';
 mkdir $BASE or die "mkdir $BASE: $!" unless -d $BASE;
 
-remove_tree "$BASE/$_" for qw( font js/bootstrap sass );
+remove_tree "$BASE/$_" for qw( fonts js/bootstrap sass );
 remove_tree "$BASE/packed" if $CAN_SASS;
 
 find(
@@ -84,9 +84,9 @@ sub dest {
   unshift @path, 'sass';
   local $" = '/';
 
-  return "$BASE/font/$name"         if $file =~ /\bfonts\b/;
-  return "$BASE/js/bootstrap/$name" if $file =~ /\.js$/;
-  return "$BASE/@path/$name"        if $file =~ /\.scss$/;
+  return "$BASE/fonts/bootstrap/$name" if $file =~ /\bfonts\b/;
+  return "$BASE/js/bootstrap/$name"    if $file =~ /\.js$/;
+  return "$BASE/@path/$name"           if $file =~ /\.scss$/;
   return;
 }
 

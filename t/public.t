@@ -11,10 +11,10 @@ my $t = Test::Mojo->new;
 
 for my $file (
   qw(
-  /font/glyphicons-halflings-regular.eot
-  /font/glyphicons-halflings-regular.svg
-  /font/glyphicons-halflings-regular.ttf
-  /font/glyphicons-halflings-regular.woff
+  /fonts/bootstrap/glyphicons-halflings-regular.eot
+  /fonts/bootstrap/glyphicons-halflings-regular.svg
+  /fonts/bootstrap/glyphicons-halflings-regular.ttf
+  /fonts/bootstrap/glyphicons-halflings-regular.woff
   /js/bootstrap/affix.js
   /js/bootstrap/alert.js
   /js/bootstrap/button.js
