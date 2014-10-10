@@ -2,6 +2,7 @@ Revision history for Mojolicious-Plugin-Bootstrap
 
 3.2005
        * Will not run 00-copy.t on install
+       * Fix fonts location
 
 3.2004   Thu Oct  9 15:13:47 2014
        * Require AssetPack 0.31 to function properly without Sass
