@@ -151,12 +151,18 @@ This is EXPERIMENTAL and subject to change.
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojo::Util ();
 use File::Basename 'dirname';
+use File::Copy ();
+use File::Path ();
 use File::Spec ();
 use Cwd        ();
+use constant DEBUG => $ENV{MOJO_ASSETPACK_DEBUG} || 0;
 
 our $VERSION = '3.2005';
+our $OVERRIDE;    # ugly hack. might go away
 
 $ENV{SASS_PATH} ||= '';
+
+my $ASSET_DIR = do { local $_ = Cwd::abs_path(__FILE__); s!\.pm$!!; $_; };
 
 my @DEFAULT_CSS_FILES = qw( bootstrap.scss );
 my @DEFAULT_JS_FILES
@@ -178,15 +184,13 @@ the C<SASS_PATH> environment variable.
 
 sub asset_path {
   my ($self, $type) = @_;
-  my $path = Cwd::abs_path(__FILE__);
   my @path = ref $self ? @{$self->{sass_path}} : ();
   my %PATH;
 
-  $path =~ s!\.pm$!!;
-
-  return join ':', grep { -d $_ and !$PATH{$_}++ } split(/:/, $ENV{SASS_PATH}), @path, File::Spec->catdir($path, 'sass')
+  return join ':', grep { -d $_ and !$PATH{$_}++ } split(/:/, $ENV{SASS_PATH}), @path,
+    File::Spec->catdir($ASSET_DIR, 'sass')
     if $type and $type eq 'sass';
-  return $path;
+  return $ASSET_DIR;
 }
 
 =head2 register
@@ -197,6 +201,7 @@ sub asset_path {
       custom => $bool, # default false
       js => [qw( button.js collapse.js ... )],
       jquery => $bool, # default true
+      theme => { paper => "https://bootswatch.com/paper/_variables.scss" }, # default to no theme
     },
   );
 
@@ -235,6 +240,15 @@ in the current version.
 This will include the bundled L<jQuery|http://jquery.com/> version in the
 L<bootstrap.js> asset. Set this to 0 if you include your own jQuery.
 
+=item * theme
+
+Can be set to an name/URL hash, where the "name" is theme name, and the URL
+points to a custom C<_variables.scss> file. This file will be downloaded and
+put into your C<public/sass/bootstrap> directory, unless a C<_variables.scss>
+file already exists.
+
+Specifying a theme will override L</custom> and L</css>.
+
 =back
 
 =cut
@@ -247,17 +261,22 @@ sub register {
   $self->{sass_path} = [];
   $config->{css} ||= [@DEFAULT_CSS_FILES];
   $config->{js}  ||= [@DEFAULT_JS_FILES];
+  $config->{custom} = 0 if $config->{theme};
   $config->{jquery} //= 1;
 
   push @{$app->static->paths}, $self->asset_path;
 
   if ($config->{custom}) {
-    $self->_copy_files($app, ref $config->{custom} eq 'ARRAY' ? @{$config->{custom}} : @DEFAULT_CSS_FILES);
+    $self->_copy_files($app,
+      map { [$_, $_] } ref $config->{custom} eq 'ARRAY' ? @{$config->{custom}} : @DEFAULT_CSS_FILES);
   }
 
-  # TODO: 'bootstrap_resources.scss'
-  if (@{$config->{css}}) {
+  if ($config->{theme}) {
+    $self->_generate_theme($app, $config->{theme});
+  }
+  elsif (@{$config->{css}}) {
     $ENV{SASS_PATH} = $self->asset_path('sass');
+    warn "[BOOTSTRAP] Defining asset 'bootstrap.css' SASS_PATH=$ENV{SASS_PATH}\n" if DEBUG;
     $app->asset('bootstrap.css' => map {"/sass/$_"} @{$config->{css}});
   }
 
@@ -270,15 +289,18 @@ sub register {
 }
 
 sub _copy_files {
+  my $modifier = ref $_[-1] eq 'CODE' ? pop : sub { };
   my ($self, $app, @files) = @_;
-  my $source_dir = $self->asset_path('sass');
 
-  for my $name (@files) {
-    my $source = File::Spec->catfile($source_dir, split '/', $name);
-    my $destination = $self->_destination_file($app, $name) or next;
+  for (@files) {
+    my ($from, $to) = @$_;
+    my $source = File::Spec->catfile($ASSET_DIR, 'sass', split '/', $from);
+    my $destination = $self->_destination_file($app, $to) or next;
     File::Path::make_path(dirname $destination) unless -d dirname($destination);
-    $app->log->info("[Bootstrap] Copying $source to $destination");
-    Mojo::Util::spurt(Mojo::Util::slurp($source), $destination);
+    $app->log->info("[BOOTSTRAP] Copying $source to $destination");
+    local $_ = Mojo::Util::slurp($source);
+    $modifier->();
+    Mojo::Util::spurt($_, $destination);
   }
 }
 
@@ -290,14 +312,56 @@ sub _destination_file {
     my $destination_dir = File::Spec->catdir($path, 'sass');
     my $destination = File::Spec->catfile($destination_dir, split '/', $name);
     push @{$self->{sass_path}}, $destination_dir;
-    return '' if -e $destination;                         # already exists
-    return $destination if -w dirname $destination_dir;
+    return ''                                   if -e $destination;               # already exists
+    warn "[BOOTSTRAP] Can write $destination\n" if DEBUG;
+    return $destination                         if -w dirname $destination_dir;
   }
 
   # should never come to this, because of
   # push @{$app->static->paths}, $self->asset_path;
-  $app->log->warn("[Bootstrap] Custom file $name does not exist in static directories!");
+  $app->log->warn("Custom file $name does not exist in static directories!");
   return '';
+}
+
+sub _generate_theme {
+  my ($self, $app, $theme) = @_;
+
+  for my $name (keys %$theme) {
+    my $url = $theme->{$name};
+
+    warn "[BOOTSTRAP] Defining theme '$name' from $url\n" if DEBUG;
+
+    if ($url =~ m!/_bootswatch\.scss!) {
+      my $destination = $self->_destination_file($app, "$name/_bootswatch.scss");
+      $self->_move($app->asset->fetch($url), $destination) if $destination and !-e $destination;
+      $url =~ s!/_bootswatch\.scss!/_variables.scss!;
+      local $OVERRIDE = 'bootswatch';
+      $self->_generate_theme($app, {$name => $url});
+    }
+    else {
+      my $destination = $self->_destination_file($app, "$name/_variables.scss");
+      if ($destination and !-e $destination) {
+        $self->_copy_files(
+          $app,
+          ["bootstrap.scss" => "$name.scss"],
+          sub {
+            s!(\@import.*bootstrap/variables.*)!\@import "$name/variables";\n$1!m;
+            s!(//.*\bUtility\b.*)!$1\n\@import "$name/$OVERRIDE";\n!mi if $OVERRIDE;
+          }
+        );
+        $self->_move($app->asset->fetch($url), $destination);
+      }
+      $ENV{SASS_PATH} = $self->asset_path('sass');
+      warn "[BOOTSTRAP] Defining asset '$name.css' SASS_PATH=$ENV{SASS_PATH}\n" if DEBUG;
+      $app->asset("$name.css" => "/sass/$name.scss");
+    }
+  }
+}
+
+sub _move {
+  my ($self, $from, $to) = @_;
+  File::Path::make_path(dirname $to);
+  File::Copy::move($from, $to) or die "[BOOTSTRAP] move $from $to: $!";
 }
 
 =head1 CREDITS
