@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
+3.2006
+       * Add support for easy customization
+
 3.2005   Fri Oct 10 09:46:03 2014
        * Will not run 00-copy.t on install
        * Fix fonts location

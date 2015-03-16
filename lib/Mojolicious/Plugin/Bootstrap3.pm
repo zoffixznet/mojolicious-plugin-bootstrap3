@@ -149,10 +149,14 @@ This is EXPERIMENTAL and subject to change.
 =cut
 
 use Mojo::Base 'Mojolicious::Plugin';
-use File::Spec::Functions 'catdir';
-use Cwd ();
+use Mojo::Util ();
+use File::Basename 'dirname';
+use File::Spec ();
+use Cwd        ();
 
 our $VERSION = '3.2005';
+
+$ENV{SASS_PATH} ||= '';
 
 my @DEFAULT_CSS_FILES = qw( bootstrap.scss );
 my @DEFAULT_JS_FILES
@@ -173,12 +177,15 @@ the C<SASS_PATH> environment variable.
 =cut
 
 sub asset_path {
-  my ($class, $type) = @_;
+  my ($self, $type) = @_;
   my $path = Cwd::abs_path(__FILE__);
+  my @path = ref $self ? @{$self->{sass_path}} : ();
+  my %PATH;
 
   $path =~ s!\.pm$!!;
 
-  return join ':', grep {$_} catdir($path, 'sass'), $ENV{SASS_PATH} if $type and $type eq 'sass';
+  return join ':', grep { -d $_ and !$PATH{$_}++ } split(/:/, $ENV{SASS_PATH}), @path, File::Spec->catdir($path, 'sass')
+    if $type and $type eq 'sass';
   return $path;
 }
 
@@ -187,6 +194,7 @@ sub asset_path {
   $app->plugin(
     bootstrap3 => {
       css => [qw( bootstrap.scss )],
+      custom => $bool, # default false
       js => [qw( button.js collapse.js ... )],
       jquery => $bool, # default true
     },
@@ -203,6 +211,11 @@ C<bootstrap.scss>.
 The name of the files to include in the asset named C<bootstrap.css>.
 
 Specify an empty list to disable building C<bootstrap.css>.
+
+=item * custom
+
+Disabled by default. Will copy C<sass/bootstrap.scss> to your project if
+true and set C<SASS_PATH> to the appropriate paths.
 
 =item * js
 
@@ -231,15 +244,20 @@ sub register {
 
   $app->plugin('AssetPack') unless eval { $app->asset };
 
+  $self->{sass_path} = [];
   $config->{css} ||= [@DEFAULT_CSS_FILES];
   $config->{js}  ||= [@DEFAULT_JS_FILES];
   $config->{jquery} //= 1;
 
   push @{$app->static->paths}, $self->asset_path;
 
+  if ($config->{custom}) {
+    $self->_copy_files($app, ref $config->{custom} eq 'ARRAY' ? @{$config->{custom}} : @DEFAULT_CSS_FILES);
+  }
+
   # TODO: 'bootstrap_resources.scss'
   if (@{$config->{css}}) {
-    local $ENV{SASS_PATH} = $self->asset_path('sass');
+    $ENV{SASS_PATH} = $self->asset_path('sass');
     $app->asset('bootstrap.css' => map {"/sass/$_"} @{$config->{css}});
   }
 
@@ -249,6 +267,37 @@ sub register {
       map {"/js/bootstrap/$_"} @{$config->{js}},
     );
   }
+}
+
+sub _copy_files {
+  my ($self, $app, @files) = @_;
+  my $source_dir = $self->asset_path('sass');
+
+  for my $name (@files) {
+    my $source = File::Spec->catfile($source_dir, split '/', $name);
+    my $destination = $self->_destination_file($app, $name) or next;
+    File::Path::make_path(dirname $destination) unless -d dirname($destination);
+    $app->log->info("[Bootstrap] Copying $source to $destination");
+    Mojo::Util::spurt(Mojo::Util::slurp($source), $destination);
+  }
+}
+
+sub _destination_file {
+  my ($self, $app, $name) = @_;
+  my $static = $app->static;
+
+  for my $path (@{$static->paths}) {
+    my $destination_dir = File::Spec->catdir($path, 'sass');
+    my $destination = File::Spec->catfile($destination_dir, split '/', $name);
+    push @{$self->{sass_path}}, $destination_dir;
+    return '' if -e $destination;                         # already exists
+    return $destination if -w dirname $destination_dir;
+  }
+
+  # should never come to this, because of
+  # push @{$app->static->paths}, $self->asset_path;
+  $app->log->warn("[Bootstrap] Custom file $name does not exist in static directories!");
+  return '';
 }
 
 =head1 CREDITS
