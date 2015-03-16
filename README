@@ -2,7 +2,7 @@ NAME
     Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 VERSION
-    3.2005
+    3.3006
 
 DESCRIPTION
     Mojolicious::Plugin::Bootstrap3 is used to include
@@ -146,8 +146,10 @@ METHODS
       $app->plugin(
         bootstrap3 => {
           css => [qw( bootstrap.scss )],
+          custom => $bool, # default false
           js => [qw( button.js collapse.js ... )],
           jquery => $bool, # default true
+          theme => { paper => "https://bootswatch.com/paper/_variables.scss" }, # default to no theme
         },
       );
 
@@ -160,6 +162,11 @@ METHODS
         The name of the files to include in the asset named "bootstrap.css".
 
         Specify an empty list to disable building "bootstrap.css".
+
+    *   custom
+
+        Disabled by default. Will copy "sass/bootstrap.scss" to your project
+        if true and set "SASS_PATH" to the appropriate paths.
 
     *   js
 
@@ -179,6 +186,15 @@ METHODS
         This will include the bundled jQuery <http://jquery.com/> version in
         the bootstrap.js asset. Set this to 0 if you include your own
         jQuery.
+
+    *   theme
+
+        Can be set to an name/URL hash, where the "name" is theme name, and
+        the URL points to a custom "_variables.scss" file. This file will be
+        downloaded and put into your "public/sass/bootstrap" directory,
+        unless a "_variables.scss" file already exists.
+
+        Specifying a theme will override "custom" and "css".
 
 CREDITS
     bootstrap-sass <https://github.com/twbs/bootstrap-sass> has a number of

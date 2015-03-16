@@ -1,6 +1,6 @@
 Revision history for Mojolicious-Plugin-Bootstrap
 
-3.3006
+3.3006   Mon Mar 16 13:52:31 2015
        * Add support for easy customization
        * Merged with Bootstrap v3.3.3
        * Add support for themes
