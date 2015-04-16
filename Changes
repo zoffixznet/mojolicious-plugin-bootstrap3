@@ -1,5 +1,8 @@
 Revision history for perl distribution Mojolicious-Plugin-Bootstrap3
 
+3.3007 Not Released
+ - Improved documentation
+
 3.3006 2015-03-16T13:52:31Z
  - Add support for easy customization
  - Merged with Bootstrap v3.3.3

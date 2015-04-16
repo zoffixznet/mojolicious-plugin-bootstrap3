@@ -26,6 +26,17 @@ L<modifications|/register> to the css pack.
   get "/" => "index";
   app->start;
 
+This basic application will make the C<bootstrap.css> and C<bootstrap.js>
+assets available, which you can load in your L<template|/Template>.
+
+Note: If this is all you're going to do, you can rather use
+L<AssetPack|Mojolicious::Plugin::AssetPack> directly:
+
+  use Mojolicious::Lite;
+  plugin "AssetPack";
+  app->asset("bootstrap.css" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css");
+  app->asset("bootstrap.js" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js");
+
 =head2 Template
 
   <!doctype html>
@@ -39,8 +50,61 @@ L<modifications|/register> to the css pack.
     </body>
   </html>
 
-TIP! You might want to load L<Mojolicious::Plugin::AssetPack> yourself to specify
-options.
+=head2 Custom stylesheet
+
+The reason for using this plugin is that it's very easy to customize Bootstrap,
+and make a smaller package for the user to download.
+
+  use Mojolicious::Lite;
+  plugin "bootstrap3", {custom => 1};
+  get "/" => "index";
+  app->start;
+
+Setting C<custom> to a true value will copy C<bootstrap.scss> to your
+C<public/sass> directory. You can then edit the file and remove the parts
+you don't need.
+
+=head2 Custom javascript
+
+Custom list of which javascript to include can be done directly in the
+configuration:
+
+  plugin "bootstrap3", jquery => 0, js => [qw( transition.js tooltip.js )];
+
+The config above will I<not> include jQuery, but only "transition.js" and
+"tooltip.js" in the output C<bootstrap.js> bundle. Complete list of possible
+javascripts can be found under L</STATIC FILE STRUCTURE>
+
+=head2 Themes
+
+It is very simple to use a custom
+L<_variables.scss|https://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/bootstrap/_variables.scss>
+file with your project. This file contains the variables controlling colors,
+fonts and styling rules in general.
+
+Example:
+
+  # application code
+  $app->plugin(bootstrap3 => (
+    theme => {xyz => "http://example.com/_variables.scss"}
+  ));
+
+  # template code
+  %= asset "xyz.css"
+  %= asset "bootstrap.js"
+
+There is also built in support for themes from L<https://bootswatch.com>. To
+include one of those themes, simply specify the URL to the C<_bootswatch.scss>
+file instead:
+
+  # application code
+  $app->plugin(bootstrap3 => (
+    theme => {paper => "https://bootswatch.com/paper/_bootswatch.scss"}
+  ));
+
+  # template code
+  %= asset "paper.css"
+  %= asset "bootstrap.js"
 
 =head1 STATIC FILE STRUCTURE
 
@@ -197,11 +261,11 @@ sub asset_path {
 
   $app->plugin(
     bootstrap3 => {
-      css => [qw( bootstrap.scss )],
-      custom => $bool, # default false
-      js => [qw( button.js collapse.js ... )],
-      jquery => $bool, # default true
-      theme => { paper => "https://bootswatch.com/paper/_variables.scss" }, # default to no theme
+      css    => [qw( bootstrap.scss )],
+      js     => [qw( button.js collapse.js ... )],
+      custom => 0,
+      jquery => 1,
+      theme  => undef,
     },
   );
 
@@ -209,18 +273,11 @@ Default values:
 
 =over 4
 
-=item * css
-
-C<bootstrap.scss>.
+=item * css: C<bootstrap.scss>
 
 The name of the files to include in the asset named C<bootstrap.css>.
 
 Specify an empty list to disable building C<bootstrap.css>.
-
-=item * custom
-
-Disabled by default. Will copy C<sass/bootstrap.scss> to your project if
-true and set C<SASS_PATH> to the appropriate paths.
 
 =item * js
 
@@ -232,8 +289,10 @@ The name of the files to include in the asset named C<bootstrap.js>.
 
 Specify an empty list to disable building C<bootstrap.css>.
 
-NOTE! This list might change, but will include all the javascripts available
-in the current version.
+=item * custom
+
+Disabled by default. Will copy C<sass/bootstrap.scss> to your project if
+true and set C<SASS_PATH> to the appropriate paths.
 
 =item * jquery
 
@@ -242,12 +301,9 @@ L<bootstrap.js> asset. Set this to 0 if you include your own jQuery.
 
 =item * theme
 
-Can be set to an name/URL hash, where the "name" is theme name, and the URL
-points to a custom C<_variables.scss> file. This file will be downloaded and
-put into your C<public/sass/bootstrap> directory, unless a C<_variables.scss>
-file already exists.
-
 Specifying a theme will override L</custom> and L</css>.
+
+See L</Themes>.
 
 =back
 
