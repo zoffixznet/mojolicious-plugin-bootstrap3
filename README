@@ -19,6 +19,17 @@ SYNOPSIS
       get "/" => "index";
       app->start;
 
+    This basic application will make the "bootstrap.css" and "bootstrap.js"
+    assets available, which you can load in your template.
+
+    Note: If this is all you're going to do, you can rather use AssetPack
+    directly:
+
+      use Mojolicious::Lite;
+      plugin "AssetPack";
+      app->asset("bootstrap.css" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css");
+      app->asset("bootstrap.js" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js");
+
   Template
       <!doctype html>
       <html>
