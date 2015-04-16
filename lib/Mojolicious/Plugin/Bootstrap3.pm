@@ -26,6 +26,17 @@ L<modifications|/register> to the css pack.
   get "/" => "index";
   app->start;
 
+This basic application will make the C<bootstrap.css> and C<bootstrap.js>
+assets available, which you can load in your L<template|/Template>.
+
+Note: If this is all you're going to do, you can rather use
+L<AssetPack|Mojolicious::Plugin::AssetPack> directly:
+
+  use Mojolicious::Lite;
+  plugin "AssetPack";
+  app->asset("bootstrap.css" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css");
+  app->asset("bootstrap.js" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js");
+
 =head2 Template
 
   <!doctype html>
@@ -39,8 +50,43 @@ L<modifications|/register> to the css pack.
     </body>
   </html>
 
-TIP! You might want to load L<Mojolicious::Plugin::AssetPack> yourself to specify
-options.
+=head2 Custom stylesheet
+
+The reason for using this plugin is that it's very easy to customize Bootstrap,
+and make a smaller package for the user to download.
+
+  use Mojolicious::Lite;
+  plugin "bootstrap3", {custom => 1};
+  get "/" => "index";
+  app->start;
+
+Setting C<custom> to a true value will copy C<bootstrap.scss> to your
+C<public/sass> directory. You can then edit the file and remove the parts
+you don't need.
+
+=head2 Custom javascript
+
+Custom list of which javascript to include can be done directly in the
+configuration:
+
+  plugin "bootstrap3", jquery => 0, js => [qw( transition.js tooltip.js )];
+
+The config above will I<not> include jQuery, but only "transition.js" and
+"tooltip.js" in the output C<bootstrap.js> bundle. Complete list of possible
+javascripts can be found under L</STATIC FILE STRUCTURE>
+
+=head2 Themes
+
+It is very simple to use a custom
+L<_variables.scss|https://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/bootstrap/_variables.scss>
+file with your project. This file contains the variables controlling colors,
+fonts and styling rules in general.
+
+Example:
+
+  plugin "bootstrap3", theme => {paper => "https://bootswatch.com/paper/_bootswatch.scss"};
+
+  %= asset "paper.css"
 
 =head1 STATIC FILE STRUCTURE
 
