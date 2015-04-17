@@ -14,8 +14,10 @@ L<Mojolicious::Plugin::Bootstrap3> is used to include L<http://getbootstrap.com/
 CSS and JavaScript files into your project.
 
 This is done with the help of L<Mojolicious::Plugin::AssetPack> and
-L<sass|http://sass-lang.com/>. Sass is required to do
-L<modifications|/register> to the css pack.
+L<Sass|http://sass-lang.com/>.
+
+See L<Mojolicious::Plugin::AssetPack::Preprocessor::Sass/DESCRIPTION> on how to
+intall Sass.
 
 =head1 SYNOPSIS
 
