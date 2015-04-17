@@ -21,7 +21,7 @@ intall Sass.
 
 =head1 SYNOPSIS
 
-=head2 Mojolicious
+=head2 Mojolicious application
 
   use Mojolicious::Lite;
   plugin "bootstrap3";
@@ -29,7 +29,7 @@ intall Sass.
   app->start;
 
 This basic application will make the C<bootstrap.css> and C<bootstrap.js>
-assets available, which you can load in your L<template|/Template>.
+assets available, which you can load in your L<template|/Mojolicious template>.
 
 Note: If this is all you're going to do, you can rather use
 L<AssetPack|Mojolicious::Plugin::AssetPack> directly:
@@ -39,7 +39,7 @@ L<AssetPack|Mojolicious::Plugin::AssetPack> directly:
   app->asset("bootstrap.css" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css");
   app->asset("bootstrap.js" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js");
 
-=head2 Template
+=head2 Mojolicious template
 
   <!doctype html>
   <html>
@@ -73,9 +73,9 @@ configuration:
 
   plugin "bootstrap3", jquery => 0, js => [qw( transition.js tooltip.js )];
 
-The config above will I<not> include jQuery, but only "transition.js" and
-"tooltip.js" in the output C<bootstrap.js> bundle. Complete list of possible
-javascripts can be found under L</STATIC FILE STRUCTURE>
+The config above will I<not> include jQuery, and only include "transition.js"
+and "tooltip.js" in the output C<bootstrap.js> bundle. Complete list of
+possible javascripts can be found under L</STATIC FILE STRUCTURE>.
 
 =head2 Themes
 
@@ -96,8 +96,8 @@ Example:
   %= asset "bootstrap.js"
 
 There is also built in support for themes from L<https://bootswatch.com>. To
-include one of those themes, simply specify the URL to the C<_bootswatch.scss>
-file instead:
+use one of the themes from bootswatch, simply specify the URL to the
+C<_bootswatch.scss> file instead of C<_variables.scss>:
 
   # application code
   $app->plugin(bootstrap3 => (
