@@ -6,7 +6,7 @@ Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 =head1 VERSION
 
-3.3006
+3.3007
 
 =head1 DESCRIPTION
 
@@ -223,7 +223,7 @@ use File::Spec ();
 use Cwd        ();
 use constant DEBUG => $ENV{MOJO_ASSETPACK_DEBUG} || 0;
 
-our $VERSION = '3.3006';
+our $VERSION = '3.3007';
 our $OVERRIDE;    # ugly hack. might go away
 
 $ENV{SASS_PATH} ||= '';

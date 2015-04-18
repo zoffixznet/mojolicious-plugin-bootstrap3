@@ -2,18 +2,20 @@ NAME
     Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 VERSION
-    3.3006
+    3.3007
 
 DESCRIPTION
     Mojolicious::Plugin::Bootstrap3 is used to include
     <http://getbootstrap.com/> CSS and JavaScript files into your project.
 
-    This is done with the help of Mojolicious::Plugin::AssetPack and sass
-    <http://sass-lang.com/>. Sass is required to do modifications to the css
-    pack.
+    This is done with the help of Mojolicious::Plugin::AssetPack and Sass
+    <http://sass-lang.com/>.
+
+    See "DESCRIPTION" in Mojolicious::Plugin::AssetPack::Preprocessor::Sass
+    on how to intall Sass.
 
 SYNOPSIS
-  Mojolicious
+  Mojolicious application
       use Mojolicious::Lite;
       plugin "bootstrap3";
       get "/" => "index";
@@ -30,7 +32,7 @@ SYNOPSIS
       app->asset("bootstrap.css" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css");
       app->asset("bootstrap.js" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js");
 
-  Template
+  Mojolicious template
       <!doctype html>
       <html>
         <head>
@@ -42,8 +44,59 @@ SYNOPSIS
         </body>
       </html>
 
-    TIP! You might want to load Mojolicious::Plugin::AssetPack yourself to
-    specify options.
+  Custom stylesheet
+    The reason for using this plugin is that it's very easy to customize
+    Bootstrap, and make a smaller package for the user to download.
+
+      use Mojolicious::Lite;
+      plugin "bootstrap3", {custom => 1};
+      get "/" => "index";
+      app->start;
+
+    Setting "custom" to a true value will copy "bootstrap.scss" to your
+    "public/sass" directory. You can then edit the file and remove the parts
+    you don't need.
+
+  Custom javascript
+    Custom list of which javascript to include can be done directly in the
+    configuration:
+
+      plugin "bootstrap3", jquery => 0, js => [qw( transition.js tooltip.js )];
+
+    The config above will *not* include jQuery, and only include
+    "transition.js" and "tooltip.js" in the output "bootstrap.js" bundle.
+    Complete list of possible javascripts can be found under "STATIC FILE
+    STRUCTURE".
+
+  Themes
+    It is very simple to use a custom _variables.scss
+    <https://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/b
+    ootstrap/_variables.scss> file with your project. This file contains the
+    variables controlling colors, fonts and styling rules in general.
+
+    Example:
+
+      # application code
+      $app->plugin(bootstrap3 => (
+        theme => {xyz => "http://example.com/_variables.scss"}
+      ));
+
+      # template code
+      %= asset "xyz.css"
+      %= asset "bootstrap.js"
+
+    There is also built in support for themes from <https://bootswatch.com>.
+    To use one of the themes from bootswatch, simply specify the URL to the
+    "_bootswatch.scss" file instead of "_variables.scss":
+
+      # application code
+      $app->plugin(bootstrap3 => (
+        theme => {paper => "https://bootswatch.com/paper/_bootswatch.scss"}
+      ));
+
+      # template code
+      %= asset "paper.css"
+      %= asset "bootstrap.js"
 
 STATIC FILE STRUCTURE
     You can replace any of these static files in your own project.
@@ -156,28 +209,21 @@ METHODS
   register
       $app->plugin(
         bootstrap3 => {
-          css => [qw( bootstrap.scss )],
-          custom => $bool, # default false
-          js => [qw( button.js collapse.js ... )],
-          jquery => $bool, # default true
-          theme => { paper => "https://bootswatch.com/paper/_variables.scss" }, # default to no theme
+          css    => [qw( bootstrap.scss )],
+          js     => [qw( button.js collapse.js ... )],
+          custom => 0,
+          jquery => 1,
+          theme  => undef,
         },
       );
 
     Default values:
 
-    *   css
-
-        "bootstrap.scss".
+    *   css: "bootstrap.scss"
 
         The name of the files to include in the asset named "bootstrap.css".
 
         Specify an empty list to disable building "bootstrap.css".
-
-    *   custom
-
-        Disabled by default. Will copy "sass/bootstrap.scss" to your project
-        if true and set "SASS_PATH" to the appropriate paths.
 
     *   js
 
@@ -189,8 +235,10 @@ METHODS
 
         Specify an empty list to disable building "bootstrap.css".
 
-        NOTE! This list might change, but will include all the javascripts
-        available in the current version.
+    *   custom
+
+        Disabled by default. Will copy "sass/bootstrap.scss" to your project
+        if true and set "SASS_PATH" to the appropriate paths.
 
     *   jquery
 
@@ -200,12 +248,9 @@ METHODS
 
     *   theme
 
-        Can be set to an name/URL hash, where the "name" is theme name, and
-        the URL points to a custom "_variables.scss" file. This file will be
-        downloaded and put into your "public/sass/bootstrap" directory,
-        unless a "_variables.scss" file already exists.
-
         Specifying a theme will override "custom" and "css".
+
+        See "Themes".
 
 CREDITS
     bootstrap-sass <https://github.com/twbs/bootstrap-sass> has a number of

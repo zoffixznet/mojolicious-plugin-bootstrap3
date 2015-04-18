@@ -1,6 +1,7 @@
 Revision history for perl distribution Mojolicious-Plugin-Bootstrap3
 
-3.3007 Not Released
+3.3007 2015-04-18T13:14:02+0200
+
  - Improved documentation
  - Compatible with AssetPack 0.44
 
