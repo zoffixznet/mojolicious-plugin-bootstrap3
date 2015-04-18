@@ -45,7 +45,7 @@ SKIP: {
   $app->mode('production');
   $app->static->paths([Mojolicious::Plugin::Bootstrap3->asset_path]);
   $app->plugin('bootstrap3');
-  is_deeply([packed_files()], [qw( bootstrap.css bootstrap.js )], 'packed for production',);
+  is_deeply([packed_files()], [qw( bootstrap.min.css bootstrap.min.js )], 'packed for production');
 }
 
 SKIP: {
@@ -58,8 +58,8 @@ SKIP: {
     [packed_files()],
     [
       qw(
-        affix.js alert.js bootstrap.css bootstrap.js button.js
-        carousel.js collapse.js dropdown.js jquery-1.11.0.min.js
+        affix.js alert.js bootstrap.css bootstrap.min.css bootstrap.min.js
+        button.js carousel.js collapse.js dropdown.js jquery-1.11.0.min.js
         modal.js popover.js scrollspy.js tab.js tooltip.js
         transition.js
         )
@@ -91,5 +91,5 @@ sub dest {
 }
 
 sub packed_files {
-  sort map { s!-\w+\.(\w+)$!.$1!; basename $_ } glob "$BASE/packed/*";
+  sort { $a cmp $b } map { s!-\w+\.((?:min\.)?\w+)$!.$1!; basename $_ } glob "$BASE/packed/*";
 }
