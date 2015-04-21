@@ -21,15 +21,44 @@ intall Sass.
 
 =head1 SYNOPSIS
 
-=head2 Mojolicious application
+=head2 Mojolicious application with embedded template
 
   use Mojolicious::Lite;
   plugin "bootstrap3";
   get "/" => "index";
   app->start;
 
+  __DATA__
+  @@ index.html.ep
+  <!DOCTYPE html>
+  <html>
+    <head>
+      %= asset "bootstrap.css"
+      %= asset "bootstrap.js"
+    </head>
+    <body>
+     <div class="container">
+        <div class="row">
+          <div class="col-xs-6">
+            %= form_for "index", begin
+              <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+              </div>
+              <button type="submit" class="btn btn-default">Submit</button>
+            % end
+          </div>
+          <div class="col-xs-6">
+            <p class="alert alert-danger">Alarm!</p>
+          </div>
+        </div>
+      </div>
+    </body>
+  </html>
+
 This basic application will make the C<bootstrap.css> and C<bootstrap.js>
-assets available, which you can load in your L<template|/Mojolicious template>.
+assets available, which again is loaded into the "index.html.ep" template in the
+data section.
 
 Note: If this is all you're going to do, you can rather use
 L<AssetPack|Mojolicious::Plugin::AssetPack> directly:
@@ -38,19 +67,6 @@ L<AssetPack|Mojolicious::Plugin::AssetPack> directly:
   plugin "AssetPack";
   app->asset("bootstrap.css" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css");
   app->asset("bootstrap.js" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js");
-
-=head2 Mojolicious template
-
-  <!doctype html>
-  <html>
-    <head>
-      %= asset "bootstrap.css"
-      %= asset "bootstrap.js"
-    </head>
-    <body>
-      <p class="alert alert-danger">Danger, danger! High Voltage!</p>
-    </body>
-  </html>
 
 =head2 Custom stylesheet
 
