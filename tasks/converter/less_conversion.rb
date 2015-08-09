@@ -1,4 +1,5 @@
 require_relative 'char_string_scanner'
+require 'bootstrap-sass/version'
 
 # This is the script used to automatically convert all of twbs/bootstrap LESS to Sass.
 #
@@ -117,10 +118,10 @@ class Converter
             file = replace_all file, /(\s*)\.navbar-(right|left)\s*\{\s*@extend\s*\.pull-(right|left);\s*/, "\\1.navbar-\\2 {\\1  float: \\2 !important;\\1"
           when 'tables.less'
             file = replace_all file, /(@include\s*table-row-variant\()(\w+)/, "\\1'\\2'"
-          when 'thumbnails.less', 'labels.less', 'badges.less'
+          when 'thumbnails.less', 'labels.less', 'badges.less', 'buttons.less'
             file = extract_nested_rule file, 'a&'
           when 'glyphicons.less'
-            file = replace_rules(file, '@font-face') { |rule|
+            file = replace_rules(file, /\s*@font-face/) { |rule|
               rule = replace_all rule, /(\$icon-font(?:-\w+)+)/, '#{\1}'
               replace_asset_url rule, :font
             }
@@ -149,9 +150,7 @@ class Converter
     end
 
     def bootstrap_less_files
-      @bootstrap_less_files ||= get_paths_by_type('less', /\.less$/) +
-        get_paths_by_type('mixins', /\.less$/,
-                          get_tree(get_tree_sha('mixins', get_tree(get_tree_sha('less'))))).map { |p| "mixins/#{p}" }
+      @bootstrap_less_files ||= get_paths_by_type('less', /\.less$/)
     end
 
     # apply general less to scss conversion
@@ -170,7 +169,14 @@ class Converter
       file   = deinterpolate_vararg_mixins(file)
       file   = replace_calculation_semantics(file)
       file   = replace_file_imports(file)
+      file   = wrap_at_groups_with_at_root(file)
       file
+    end
+
+    def wrap_at_groups_with_at_root(file)
+      replace_rules(file, /@(?:font-face|-ms-viewport)/) { |rule, _pos|
+        %Q(@at-root {\n#{indent rule, 2}\n})
+      }
     end
 
     def sass_fn_exists(fn)
@@ -425,16 +431,16 @@ SASS
     #  #scope > .mixin()    -> @include scope-mixin()
     #  &:extend(.mixin all) -> @include mixin()
     def replace_mixins(less, mixin_names)
-      mixin_pattern = /(\s+)(([#|\.][\w-]+\s*>\s*)*)\.([\w-]+\(.*\))(?!\s\{)/
+      mixin_pattern = /(?<=^|\s)((?:[#|\.][\w-]+\s*>\s*)*)\.([\w-]+)\((.*)\)(?!\s\{)/
 
-      less = less.gsub(mixin_pattern) do |match|
-        matches    = match.scan(mixin_pattern).flatten
-        scope      = matches[1] && matches[1] != '' ? matches[1].scan(/[\w-]+/).join('-') + '-' : ''
-        mixin_name = match.scan(/\.([\w-]+)\(.*\)\s?\{?/).first
-        if mixin_name && mixin_names.include?("#{scope}#{mixin_name.first}")
-          "#{matches.first}@include #{scope}#{matches.last.gsub(/;\s*\$/, ', $').sub(/;\)$/, ')').sub(/\(\)$/, '')}"
+      less = less.gsub(mixin_pattern) do |_|
+        scope, name, args = $1, $2, $3
+        scope = scope.scan(/[\w-]+/).join('-') + '-' unless scope.empty?
+        args = "(#{args.tr(';', ',')})" unless args.empty?
+        if name && mixin_names.include?("#{scope}#{name}")
+          "@include #{scope}#{name}#{args}"
         else
-          "#{matches.first}@extend .#{scope}#{matches.last.gsub(/\(\)/, '')}"
+          "@extend .#{scope}#{name}"
         end
       end
 
