@@ -338,7 +338,7 @@ sub register {
   $config->{custom} = 0 if $config->{theme};
   $config->{jquery} //= 1;
 
-  push @{$app->static->paths}, $self->asset_path;
+  push @{$app->asset->source_paths}, $self->asset_path;
 
   if ($config->{custom}) {
     $self->_copy_files($app,
@@ -380,9 +380,8 @@ sub _copy_files {
 
 sub _destination_file {
   my ($self, $app, $name) = @_;
-  my $static = $app->static;
 
-  for my $path (@{$static->paths}) {
+  for my $path (@{$app->asset->source_paths}) {
     my $destination_dir = File::Spec->catdir($path, 'sass');
     my $destination = File::Spec->catfile($destination_dir, split '/', $name);
     push @{$self->{sass_path}}, $destination_dir;
@@ -392,7 +391,6 @@ sub _destination_file {
   }
 
   # should never come to this, because of
-  # push @{$app->static->paths}, $self->asset_path;
   $app->log->warn("Custom file $name does not exist in static directories!");
   return '';
 }

@@ -2,6 +2,7 @@ Revision history for perl distribution Mojolicious-Plugin-Bootstrap3
 
 3.3500 Not Released
  - Merged with Bootstrap v3.3.5
+ - Will use source_paths() from Mojolicious::Plugin::AssetPack 0.57
 
 3.3007 2015-04-18T13:14:02+0200
  - Improved documentation
