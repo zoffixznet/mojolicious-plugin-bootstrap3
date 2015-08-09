@@ -14,7 +14,7 @@ WriteMakefile(
       repository => 'https://github.com/jhthorsen/mojolicious-plugin-bootstrap3.git',
     },
   },
-  BUILD_REQUIRES => {'Test::More'                     => '0.88'},
-  PREREQ_PM      => {'Mojolicious::Plugin::AssetPack' => '0.58'},
-  test           => {TESTS                            => 't/*.t'},
+  BUILD_REQUIRES => {'Test::More'  => '0.88'},
+  PREREQ_PM      => {'Mojolicious' => '6.00', 'Mojolicious::Plugin::AssetPack' => '0.58'},
+  test           => {TESTS         => 't/*.t'},
 );
