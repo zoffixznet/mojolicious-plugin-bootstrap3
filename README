@@ -2,7 +2,7 @@ NAME
     Mojolicious::Plugin::Bootstrap3 - Mojolicious + http://getbootstrap.com/
 
 VERSION
-    3.3007
+    3.3500
 
 DESCRIPTION
     Mojolicious::Plugin::Bootstrap3 is used to include
@@ -15,14 +15,43 @@ DESCRIPTION
     on how to intall Sass.
 
 SYNOPSIS
-  Mojolicious application
+  Mojolicious application with embedded template
       use Mojolicious::Lite;
       plugin "bootstrap3";
       get "/" => "index";
       app->start;
 
+      __DATA__
+      @@ index.html.ep
+      <!DOCTYPE html>
+      <html>
+        <head>
+          %= asset "bootstrap.css"
+          %= asset "bootstrap.js"
+        </head>
+        <body>
+         <div class="container">
+            <div class="row">
+              <div class="col-xs-6">
+                %= form_for "index", begin
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                  </div>
+                  <button type="submit" class="btn btn-default">Submit</button>
+                % end
+              </div>
+              <div class="col-xs-6">
+                <p class="alert alert-danger">Alarm!</p>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+
     This basic application will make the "bootstrap.css" and "bootstrap.js"
-    assets available, which you can load in your template.
+    assets available, which again is loaded into the "index.html.ep"
+    template in the data section.
 
     Note: If this is all you're going to do, you can rather use AssetPack
     directly:
@@ -31,18 +60,6 @@ SYNOPSIS
       plugin "AssetPack";
       app->asset("bootstrap.css" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css");
       app->asset("bootstrap.js" => "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js");
-
-  Mojolicious template
-      <!doctype html>
-      <html>
-        <head>
-          %= asset "bootstrap.css"
-          %= asset "bootstrap.js"
-        </head>
-        <body>
-          <p class="alert alert-danger">Danger, danger! High Voltage!</p>
-        </body>
-      </html>
 
   Custom stylesheet
     The reason for using this plugin is that it's very easy to customize
